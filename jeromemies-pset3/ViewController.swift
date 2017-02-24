@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import Foundation
 
 class ViewController: UIViewController {
 
+    
     var selectedData: String = ""
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableview: UITableView!
@@ -26,7 +28,14 @@ class ViewController: UIViewController {
         tableview.dataSource = self
         searchBar.delegate = self
         
+        let url = URL(string:"https://www.omdbapi.com/?")!
         
+        let session = URLSession.shared
+        let task = session.dataTask(with: url) {
+            (data: Data?, response: URLResponse?, error: Error?) in // ...
+            print(String(data: data!, encoding: .utf8))
+        }
+        task.resume()
     }
 
 
