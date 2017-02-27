@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0205ACDD1E647DB30076FF76 /* SecondCustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0205ACDC1E647DB30076FF76 /* SecondCustomCell.swift */; };
 		02C72B031E603EFE00FBE18D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C72B021E603EFE00FBE18D /* AppDelegate.swift */; };
 		02C72B051E603EFE00FBE18D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C72B041E603EFE00FBE18D /* ViewController.swift */; };
 		02C72B081E603EFE00FBE18D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 02C72B061E603EFE00FBE18D /* Main.storyboard */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0205ACDC1E647DB30076FF76 /* SecondCustomCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondCustomCell.swift; sourceTree = "<group>"; };
 		02C72AFF1E603EFE00FBE18D /* jeromemies-pset3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "jeromemies-pset3.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		02C72B021E603EFE00FBE18D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		02C72B041E603EFE00FBE18D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 				02C72B091E603EFE00FBE18D /* Assets.xcassets */,
 				02C72B0B1E603EFE00FBE18D /* LaunchScreen.storyboard */,
 				02C72B0E1E603EFE00FBE18D /* Info.plist */,
+				0205ACDC1E647DB30076FF76 /* SecondCustomCell.swift */,
 			);
 			path = "jeromemies-pset3";
 			sourceTree = "<group>";
@@ -142,6 +145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0205ACDD1E647DB30076FF76 /* SecondCustomCell.swift in Sources */,
 				02C72B151E60415800FBE18D /* SecondViewController.swift in Sources */,
 				02C72B051E603EFE00FBE18D /* ViewController.swift in Sources */,
 				02C72B171E6041A700FBE18D /* CustomCell.swift in Sources */,
@@ -307,6 +311,7 @@
 				02C72B131E603EFE00FBE18D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

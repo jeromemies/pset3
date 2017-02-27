@@ -9,6 +9,17 @@
 import UIKit
 import Foundation
 
+class Movies {
+    var title: String
+    required init?(title: String) {
+        self.title = title
+        
+    
+    }
+    
+}
+
+
 class ViewController: UIViewController {
 
     
@@ -27,13 +38,22 @@ class ViewController: UIViewController {
         tableview.delegate = self
         tableview.dataSource = self
         searchBar.delegate = self
-        
-        let url = URL(string:"https://www.omdbapi.com/?")!
+        let i = "hello"
+        let year = ""
+        let url = URL(string:"https://www.omdbapi.com/?t=" + i + "&y=" + year + "&plot=short&r=json")!
         
         let session = URLSession.shared
         let task = session.dataTask(with: url) {
             (data: Data?, response: URLResponse?, error: Error?) in // ...
-            print(String(data: data!, encoding: .utf8))
+            //let selectedData = String(data: data!, encoding: .utf8)
+            
+            let json = try? JSONSerialization.jsonObject(with: data!, options: [])
+            print(json)
+            if let dictionary = json as? [String: Any] {
+                let title = dictionary["Title"] as? String
+                print(title)
+                
+            }
         }
         task.resume()
     }
@@ -62,6 +82,7 @@ class ViewController: UIViewController {
 extension ViewController: UISearchBarDelegate{
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchActive = true;
+        
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -78,8 +99,46 @@ extension ViewController: UISearchBarDelegate{
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        filtered = data.filter({ (text) -> Bool in
+        var title: String = ""
+        var titles: Array<String> = [title]
+        let i = searchText
+        let year = ""
+        let url = URL(string:"https://www.omdbapi.com/?t=" + i + "&y=" + year + "&plot=short&r=json")!
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: url) {
+            (data: Data?, response: URLResponse?, error: Error?) in // ...
+            
+            
+            let json = try? JSONSerialization.jsonObject(with: data!, options: [])
+            //print(json)
+            if let dictionary = json as? [String: Any] {
+                title = dictionary["Title"] as! String
+                titles = [title]
+                print(title)
+                print(titles)
+                self.filtered = titles.filter({ (text) -> Bool in
+                    let tmp: NSString = text as NSString
+                    let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+                    return range.location != NSNotFound
+                })
+                if(self.filtered.count == 0){
+                    self.searchActive = false;
+                } else {
+                    self.searchActive = true;
+                }
+                self.tableview.reloadData()
+
+            }
+                    }
+        
+        task.resume()
+        
+        
+        
+        filtered = titles.filter({ (text) -> Bool in
             let tmp: NSString = text as NSString
+            
             let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
             return range.location != NSNotFound
         })
@@ -121,7 +180,9 @@ extension ViewController: UITableViewDataSource {
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
-        if (filtered.count == data.count){
+        
+        
+        if (filtered == []){
         self.selectedData = data[indexPath.row]
         } else {
             self.selectedData = filtered[indexPath.row]

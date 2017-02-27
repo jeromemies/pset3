@@ -9,8 +9,9 @@
 import UIKit
 
 class SecondViewController: UIViewController {
-
-    var data:String?
+    
+    var data:String!
+    var favorites: Array<String>?
     
     @IBOutlet weak var outputTable: UITableView!
     
@@ -18,9 +19,17 @@ class SecondViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        outputTable.delegate = self
+        outputTable.dataSource = self
         // Do any additional setup after loading the view.
-        print(data)
+        if (favorites == nil) {
+            favorites = []
+            favorites!.append(data)
+        } else {
+            favorites!.append(data)
+        }
+        //print(favorites)
+        //print(data)
     }
 
     override func didReceiveMemoryWarning() {
@@ -41,23 +50,35 @@ class SecondViewController: UIViewController {
 
 }
 
-extension SecondViewController: UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if (data != nil){
+extension SecondViewController: UITableViewDataSource {
+    func numberOfRowsInSectionsinTableView(tableView: UITableView) -> Int {
+        //print(data)
             return 1
-        } else {
-            return 0
-        }
     }
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+        
+//        if (data != nil){
+//            print(favorites!.count)
+//            return favorites!.count
+//            
+//        } else {
+//            return 0
+//        }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let secondCell = self.outputTable.dequeueReusableCell(withIdentifier: "SecondCell", for: indexPath) as! CustomCell;
-        if let labels = data {
-            secondCell.savedList?.text = labels
-        } else {
-            
-        }
-        return secondCell
+        let secondCell = self.outputTable.dequeueReusableCell(withIdentifier: "SecondCell", for: indexPath) as! SecondCustomCell;
+        print("hello, " + data)
+        print(favorites)
+        //favorites!.append(data)
+        let labels = favorites
+        
+            print(labels)
+            secondCell.savedList.text = labels?[indexPath.row]
+        
+        return secondCell;
         
         
     }
