@@ -22,12 +22,10 @@ class SecondViewController: UIViewController {
         outputTable.delegate = self
         outputTable.dataSource = self
         // Do any additional setup after loading the view.
-        if (favorites == nil) {
-            favorites = []
-            favorites!.append(data)
-        } else {
-            favorites!.append(data)
-        }
+        self.favorites = UserDefaults.standard.array(forKey: "list") as? [String] ?? []
+        
+        self.favorites!.append(data)
+        UserDefaults.standard.set(self.favorites!, forKey: "list")
         //print(favorites)
         //print(data)
     }
@@ -56,7 +54,7 @@ extension SecondViewController: UITableViewDataSource {
             return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return (self.favorites?.count)!
     }
 
         
@@ -70,13 +68,11 @@ extension SecondViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let secondCell = self.outputTable.dequeueReusableCell(withIdentifier: "SecondCell", for: indexPath) as! SecondCustomCell;
-        print("hello, " + data)
-        print(favorites)
-        //favorites!.append(data)
-        let labels = favorites
-        
-            print(labels)
-            secondCell.savedList.text = labels?[indexPath.row]
+        self.favorites = UserDefaults.standard.array(forKey: "list") as? [String] ?? []
+        let labels = self.favorites
+            print(self.favorites)
+            //print(labels)
+            secondCell.savedList.text = self.favorites?[indexPath.row]
         
         return secondCell;
         

@@ -101,9 +101,9 @@ extension ViewController: UISearchBarDelegate{
         
         var title: String = ""
         var titles: Array<String> = [title]
-        let i = searchText
+        guard let i = searchText.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else { return }
         let year = ""
-        let url = URL(string:"https://www.omdbapi.com/?t=" + i + "&y=" + year + "&plot=short&r=json")!
+        let url = URL(string:"https://www.omdbapi.com/?s=" + i + "&y=" + year + "&plot=short&r=json")!
         
         let session = URLSession.shared
         let task = session.dataTask(with: url) {
@@ -113,8 +113,12 @@ extension ViewController: UISearchBarDelegate{
             let json = try? JSONSerialization.jsonObject(with: data!, options: [])
             //print(json)
             if let dictionary = json as? [String: Any] {
-                title = dictionary["Title"] as! String
-                titles = [title]
+                guard let results = dictionary["Search"] as? [[String : String]] else {
+                    return
+                }
+                guard let titles = results.map({ $0["Title"] }) as? [String] else {
+                    return
+                }
                 print(title)
                 print(titles)
                 self.filtered = titles.filter({ (text) -> Bool in
@@ -127,8 +131,10 @@ extension ViewController: UISearchBarDelegate{
                 } else {
                     self.searchActive = true;
                 }
-                self.tableview.reloadData()
-
+                
+                DispatchQueue.main.async {
+                    self.tableview.reloadData()
+                }
             }
                     }
         
@@ -136,18 +142,18 @@ extension ViewController: UISearchBarDelegate{
         
         
         
-        filtered = titles.filter({ (text) -> Bool in
-            let tmp: NSString = text as NSString
-            
-            let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
-            return range.location != NSNotFound
-        })
-        if(filtered.count == 0){
-            searchActive = false;
-        } else {
-            searchActive = true;
-        }
-        self.tableview.reloadData()
+//        filtered = titles.filter({ (text) -> Bool in
+//            let tmp: NSString = text as NSString
+//            
+//            let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+//            return range.location != NSNotFound
+//        })
+//        if(filtered.count == 0){
+//            searchActive = false;
+//        } else {
+//            searchActive = true;
+//        }
+//        self.tableview.reloadData()
         
     }
 }
