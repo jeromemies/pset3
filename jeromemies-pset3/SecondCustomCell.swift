@@ -9,6 +9,7 @@
 import UIKit
 
 class SecondCustomCell: UITableViewCell {
+    @IBOutlet weak var savedListYear: UILabel!
     @IBOutlet weak var savedList: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()

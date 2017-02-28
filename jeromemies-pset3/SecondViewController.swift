@@ -10,8 +10,14 @@ import UIKit
 
 class SecondViewController: UIViewController {
     
-    var data:String!
-    var favorites: Array<String>?
+    var data: [String: String]? {
+        didSet {
+            guard let data = data else { return }
+            
+            self.favorites.append(data)
+        }
+    }
+    var favorites: [[String: String]] = UserDefaults.standard.array(forKey: "list") as? [[String: String]] ?? []
     
     @IBOutlet weak var outputTable: UITableView!
     
@@ -22,10 +28,8 @@ class SecondViewController: UIViewController {
         outputTable.delegate = self
         outputTable.dataSource = self
         // Do any additional setup after loading the view.
-        self.favorites = UserDefaults.standard.array(forKey: "list") as? [String] ?? []
         
-        self.favorites!.append(data)
-        UserDefaults.standard.set(self.favorites!, forKey: "list")
+        UserDefaults.standard.set(self.favorites, forKey: "list")
         //print(favorites)
         //print(data)
     }
@@ -54,10 +58,10 @@ extension SecondViewController: UITableViewDataSource {
             return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (self.favorites?.count)!
+        return (self.favorites.count)
     }
 
-        
+    
 //        if (data != nil){
 //            print(favorites!.count)
 //            return favorites!.count
@@ -68,11 +72,11 @@ extension SecondViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let secondCell = self.outputTable.dequeueReusableCell(withIdentifier: "SecondCell", for: indexPath) as! SecondCustomCell;
-        self.favorites = UserDefaults.standard.array(forKey: "list") as? [String] ?? []
-        let labels = self.favorites
-            print(self.favorites)
+        
+        
             //print(labels)
-            secondCell.savedList.text = self.favorites?[indexPath.row]
+            secondCell.savedList.text = self.favorites[indexPath.row]["Title"]
+        secondCell.savedListYear.text = self.favorites[indexPath.row]["Year"]
         
         return secondCell;
         

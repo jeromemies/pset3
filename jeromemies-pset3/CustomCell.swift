@@ -11,6 +11,9 @@ import UIKit
 class CustomCell: UITableViewCell {
 
     //@IBOutlet weak var savedList: UILabel!
+    
+    @IBOutlet weak var poster: UIImageView!
+    @IBOutlet weak var yearLabel: UILabel!
     @IBOutlet weak var filteredCell: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()

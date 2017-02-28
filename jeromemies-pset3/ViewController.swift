@@ -9,27 +9,29 @@
 import UIKit
 import Foundation
 
-class Movies {
-    var title: String
-    required init?(title: String) {
-        self.title = title
-        
-    
-    }
-    
-}
+//class Movie {
+//    
+//    var movie: Dictionary<String, Any>
+//    
+//
+//        
+//    
+//    
+//    
+//}
 
 
 class ViewController: UIViewController {
 
     
-    var selectedData: String = ""
+    var selectedData: [String : String]?
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableview: UITableView!
     
+    
     var searchActive : Bool = false
-    var data = ["San Francisco","New York","San Jose","Chicago","Los Angeles","Austin","Seattle"]
-    var filtered:[String] = []
+    var data:[[String : String]] = []
+    var filtered:[[String : String]] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +40,7 @@ class ViewController: UIViewController {
         tableview.delegate = self
         tableview.dataSource = self
         searchBar.delegate = self
+        tableview.rowHeight = 85
         let i = "hello"
         let year = ""
         let url = URL(string:"https://www.omdbapi.com/?t=" + i + "&y=" + year + "&plot=short&r=json")!
@@ -51,7 +54,8 @@ class ViewController: UIViewController {
             print(json)
             if let dictionary = json as? [String: Any] {
                 let title = dictionary["Title"] as? String
-                print(title)
+                
+                self.data.append(dictionary as! [String : String])
                 
             }
         }
@@ -72,7 +76,7 @@ class ViewController: UIViewController {
         let secondViewController = segue.destination as! SecondViewController
         
         // Closure
-        secondViewController.data = self.selectedData
+        secondViewController.data = self.selectedData!
         print(self.selectedData)
 
     }
@@ -116,21 +120,26 @@ extension ViewController: UISearchBarDelegate{
                 guard let results = dictionary["Search"] as? [[String : String]] else {
                     return
                 }
-                guard let titles = results.map({ $0["Title"] }) as? [String] else {
-                    return
-                }
+//                guard let titles = results.map({ $0["Title"] }) as? [String] else {
+//                    return
+//                }
+//                guard let yearRelease = results.map({ $0["Year"] }) as? [String] else {
+//                    return
+//                }
                 print(title)
                 print(titles)
-                self.filtered = titles.filter({ (text) -> Bool in
-                    let tmp: NSString = text as NSString
-                    let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
-                    return range.location != NSNotFound
-                })
-                if(self.filtered.count == 0){
-                    self.searchActive = false;
-                } else {
-                    self.searchActive = true;
-                }
+                self.filtered = results
+                
+//                self.filtered = titles.filter({ (text) -> Bool in
+//                    let tmp: NSString = text as NSString
+//                    let range = tmp.range(of: searchText, options: NSString.CompareOptions.caseInsensitive)
+//                    return range.location != NSNotFound
+//                })
+//                if(self.filtered.count == 0){
+//                    self.searchActive = false;
+//                } else {
+//                    self.searchActive = true;
+//                }
                 
                 DispatchQueue.main.async {
                     self.tableview.reloadData()
@@ -166,17 +175,52 @@ extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if(searchActive) {
-            return filtered.count
+            return 5
         }
         return data.count;
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CustomCell;
+        
+        
+        
+        if(searchActive) {
+        let sessionPoster = URLSession.shared
+            let urlImage = URL(string:filtered[indexPath.row]["Poster"]!)!
+        
+        
+        let task = sessionPoster.dataTask(with: urlImage) {
+            (data: Data?, response: URLResponse?, error: Error?) in //
+            guard
+                let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                //let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                let data = data, error == nil,
+                let image = UIImage(data: data)
+                else { return }
+            DispatchQueue.main.async() { () -> Void in
+                cell.poster.image = image
+            }
+            
+            
+            //let image = UIImage(data: data)
+            
+            
+
+            
+            
+        }
+            task.resume()
+        }
         if(searchActive){
-            cell.filteredCell?.text = filtered[indexPath.row]
+            cell.filteredCell?.text = filtered[indexPath.row]["Title"]
+            cell.yearLabel?.text = filtered[indexPath.row]["Year"]
+            
+            
         } else {
-            cell.filteredCell?.text = data[indexPath.row];
+            cell.filteredCell?.text = data[indexPath.row]["Title"];
+            cell.yearLabel?.text = data[indexPath.row]["Year"]
+            
         }
         
         return cell;
@@ -188,11 +232,11 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath){
         
         
-        if (filtered == []){
-        self.selectedData = data[indexPath.row]
-        } else {
+//        if (filtered == []){
+//        self.selectedData = data[indexPath.row]
+//        } else {
             self.selectedData = filtered[indexPath.row]
-        }
+//        }
         
     }
 }
